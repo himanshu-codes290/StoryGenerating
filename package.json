@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspaces"
+    "dev": "npm run dev --workspace"
   },
   "license": "ISC",
   "dependencies": {
