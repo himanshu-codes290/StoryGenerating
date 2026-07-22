@@ -7,7 +7,7 @@ export async function generateStoryRoutes(app : FastifyInstance) {
         const story = await generateStory(request.body);
         
         return reply.send({
-            story: story
+            story: story.choices[0]?.message.content
         });
 
     });

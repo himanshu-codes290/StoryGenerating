@@ -9,7 +9,7 @@ async function start() {
             port: env.PORT,
             host: env.HOST
         });
-        console.log("server running on port 3000");
+        console.log(`server running on port ${env.PORT}`);
     } catch (error){
         app.log.error(error);
         process.exit(1);
