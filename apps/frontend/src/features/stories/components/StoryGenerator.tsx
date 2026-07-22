@@ -13,6 +13,7 @@ interface StoryGeneratorProps{
 export function StoryGenerator({onGenerate,loading} : StoryGeneratorProps) {
     
     const [prompt,setPrompt] = useState("");
+    const maxLenght=300
 
     async function handleSubmit()
     {
@@ -25,12 +26,15 @@ export function StoryGenerator({onGenerate,loading} : StoryGeneratorProps) {
     
     return (
        <div className="space-y-4">
+        <div className="flex flex-col gap-2">
             <Textarea 
             placeholder="Describe the story you want to generate..."
             value={prompt}
             onChange={handleChange}
+            className="min-h-32"
             />
-
+            <span className="text-sm text-muted-foreground ml-2"> {prompt.length}/{maxLenght} </span>
+        </div>
             {
                 loading ? 
                 <div  className="flex items-center gap-2">

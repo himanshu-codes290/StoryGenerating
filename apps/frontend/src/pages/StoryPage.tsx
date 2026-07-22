@@ -6,7 +6,7 @@ import { generateStory } from "../features/stories/api/storyApi.ts"
 
 import { Container } from "../components/layout/Container.tsx";
 import { PageHeader } from "../components/layout/PageHeader.tsx";
-import { Card } from "@/components/ui/Card.tsx";
+import { Card } from "@/components/ui/card.tsx";
 
 export function StoryPage()
 {

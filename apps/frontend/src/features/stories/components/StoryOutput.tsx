@@ -11,7 +11,11 @@ export function StoryOutput({story,error} : StoryOutputProps)
             <p>{error}</p>
         )}
 
-        {story}
+        {!story && (
+            <p className="text-sm text-muted-foreground"> Your generated story will appear here. <br />
+                Start by describing a scene, character, or idea.
+            </p>
+        )}
         </>
     )
 }
