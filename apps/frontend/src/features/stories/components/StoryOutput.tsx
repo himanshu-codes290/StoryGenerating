@@ -7,10 +7,11 @@ export function StoryOutput({story,error} : StoryOutputProps)
 {
     return (
         <>
-        {story}
         {error && (
             <p>{error}</p>
         )}
+
+        {story}
         </>
     )
 }

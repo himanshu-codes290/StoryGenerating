@@ -2,8 +2,11 @@ import { useState } from "react";
 
 import { StoryGenerator } from "../features/stories/components/StoryGenerator.tsx";
 import { StoryOutput } from "../features/stories/components/StoryOutput.tsx";
-import {generateStory} from "../features/stories/api/storyApi.ts"
-import type {GenerateStoryRequest} from "../features/stories/types/story.types.ts"
+import { generateStory } from "../features/stories/api/storyApi.ts"
+
+import { Container } from "../components/layout/Container.tsx";
+import { PageHeader } from "../components/layout/PageHeader.tsx";
+import { Card } from "@/components/ui/Card.tsx";
 
 export function StoryPage()
 {
@@ -17,10 +20,8 @@ export function StoryPage()
         setError(null)
 
         try{
-            const request : GenerateStoryRequest = {prompt}
-            const response = await generateStory(request);
-            let story : string  = response.story;
-            setStory(story);
+            const response = await generateStory({prompt,});
+            setStory(response.story);
         }   
         catch(err) {
             if(err instanceof Error){
@@ -35,14 +36,32 @@ export function StoryPage()
     }
     return (
         <main>
-            <StoryGenerator 
-            onGenerate={handleGenerate}
-            loading={loading}
-            />
-            <StoryOutput 
-            story={story}
-            error={error}
-            />
+            <Container
+            className="flex flex-col gap-4"
+            >
+                <PageHeader title={
+                "AI Story Generating"}
+                description="Generate creative stories from your ideas."
+                />
+
+                <Card
+                className="p-4"
+                >
+                    <StoryGenerator 
+                    onGenerate={handleGenerate}
+                    loading={loading}
+                    />
+                </Card>
+                
+                <Card
+                className="p-4"
+                >
+                    <StoryOutput 
+                    story={story}
+                    error={error}
+                    />
+                </Card>
+            </Container>
         </main>
     );
 }

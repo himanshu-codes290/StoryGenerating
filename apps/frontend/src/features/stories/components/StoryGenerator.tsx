@@ -1,5 +1,7 @@
 import { useState } from "react";
-
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 
 
 interface StoryGeneratorProps{
@@ -22,17 +24,26 @@ export function StoryGenerator({onGenerate,loading} : StoryGeneratorProps) {
     }
     
     return (
-       <>
-            <h1> Generate your Story</h1>
-            <textarea 
+       <div className="space-y-4">
+            <Textarea 
+            placeholder="Describe the story you want to generate..."
             value={prompt}
             onChange={handleChange}
             />
-            <button
-            onClick={handleSubmit}
-            disabled={loading}
-            > {loading ? "Generating..." : "Generate"}
-            </button>
-        </> 
+
+            {
+                loading ? 
+                <div  className="flex items-center gap-2">
+                <Spinner />
+                <span>Generating...</span>
+                </div> 
+                :  <Button
+                onClick={handleSubmit}
+                disabled={loading}
+            > Generate
+            </Button>
+            }
+           
+        </div>
     );
 }
