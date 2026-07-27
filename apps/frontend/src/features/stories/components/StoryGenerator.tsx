@@ -28,9 +28,10 @@ export function StoryGenerator({onGenerate,loading} : StoryGeneratorProps) {
        <div className="space-y-4">
         <div className="flex flex-col gap-2">
             <Textarea 
-            placeholder="Describe the story you want to generate..."
+            placeholder="Describe the story you want to generate in 300 words..."
             value={prompt}
             onChange={handleChange}
+            maxLength={300}
             className="min-h-32"
             />
             <span className="text-sm text-muted-foreground ml-2"> {prompt.length}/{maxLenght} </span>

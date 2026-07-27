@@ -6,16 +6,19 @@ interface StoryOutputProps {
 export function StoryOutput({story,error} : StoryOutputProps)
 {
     return (
-        <>
-        {error && (
-            <p>{error}</p>
-        )}
+    <>
+        {error && <p className="text-sm text-red-500">{error}</p>}
 
-        {!story && (
-            <p className="text-sm text-muted-foreground"> Your generated story will appear here. <br />
-                Start by describing a scene, character, or idea.
+         {story ? (
+        <div className="whitespace-pre-wrap text-sm">
+          {story}
+        </div>
+        ) : (
+            <p className="text-sm text-muted-foreground">
+            Your generated story will appear here. <br />
+            Start by describing a scene, character, or idea.
             </p>
         )}
-        </>
+    </>
     )
 }
