@@ -1,4 +1,4 @@
-import { moderateCheck } from "../providers/groq.moderator.js";
+import { moderateCheck } from "../providers/llm/groq.moderator.js";
 
 export interface validationResult{
     valid : boolean,

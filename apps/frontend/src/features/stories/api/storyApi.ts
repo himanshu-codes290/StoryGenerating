@@ -6,7 +6,7 @@ export async function generateStory(
 ) : Promise<GenerateStoryResponse> {
 
     // 1. Submit the task to queue
-    const response = await fetch('/api/v1/stories/generate', {
+    const response = await fetch('/api/v1/generate/stories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(request),

@@ -46,5 +46,9 @@
   },
   "include": [
     "src/**/*.ts"
-  ]
+  ],
+  "baseUrl": ".",
+  "paths": {
+    "@repo/types/*": ["../../packages/types/*"]
+  }
 }

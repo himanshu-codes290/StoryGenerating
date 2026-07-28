@@ -1,4 +1,4 @@
-import { groqStoryGenerator } from "../providers/groq.story.js";
+import { groqStoryGenerator } from "../providers/llm/groq.story.js";
 import { validatePrompt } from "./validateStory.service.js";
 import { ValidationError } from "../errors/generateStory.Error.js";
 
