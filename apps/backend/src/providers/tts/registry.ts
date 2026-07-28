@@ -2,12 +2,14 @@ import { DeepgramProvider } from "./deepgram.speech.js";
 import { ElevenLabsProvider } from "./elevenLabs.speech.js";
 
 import type {TTSProvider } from "./tts.provider.js"
-import type {TTSProviderName } from "../../../../packages/types/speech/generateSpeechRequest.js"
+import type {TTSProviderName } from "@repo/types/speech/generateSpeechRequest"
+import { googleProvider } from "./google.speech.js";
 
 
 const providers: Record<TTSProviderName, TTSProvider> = {
     deepgram : new DeepgramProvider(),
     elevenlabs : new ElevenLabsProvider(),
+    google_tts : new googleProvider()
 };
 
 // const providers: new Map([

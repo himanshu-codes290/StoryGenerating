@@ -6,4 +6,5 @@ export const env = {
     GROQ_API_KEY : process.env.GROQ_API_KEY,
     ELEVENLABS_API_KEY : process.env.ELEVENLABS_API_KEY,
     DEEPGRAM_API_KEY : process.env.DEEPGRAM_API_KEY,
+    GOOGLE_TTS_API_KEY : process.env.GOOGLE_TTS_API_KEY,
 };

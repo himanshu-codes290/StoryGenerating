@@ -4,7 +4,7 @@ export interface generateSpeechRequest {
     text : string
 }
 
-export type TTSProviderName = "deepgram" | "elevenlabs";
+export type TTSProviderName = "deepgram" | "elevenlabs" | "google_tts";
 
 export type TTSRequest = {
   text: string;

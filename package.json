@@ -12,6 +12,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@deepgram/sdk": "^5.7.0"
+    "@deepgram/sdk": "^5.7.0",
+    "@google-cloud/text-to-speech": "^6.4.1"
   }
 }
