@@ -5,7 +5,7 @@ import { TextToSpeechPage } from '../pages/TextToSpeechPage.tsx'
 function App() {
   return (
     <>
-      {/* <StoryPage/> */}
+      <StoryPage/>
       <TextToSpeechPage />
     </>
   )
