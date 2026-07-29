@@ -2,7 +2,7 @@ import { DeepgramProvider } from "./deepgram.speech.js";
 import { ElevenLabsProvider } from "./elevenLabs.speech.js";
 
 import type {TTSProvider } from "./tts.provider.js"
-import type {TTSProviderName } from "@repo/types/speech/generateSpeechRequest"
+import type {TTSProviderName } from "@repo/types/speech/tts.types"
 import { googleProvider } from "./google.speech.js";
 
 

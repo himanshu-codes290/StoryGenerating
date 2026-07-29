@@ -5,7 +5,7 @@ import {Readable} from "node:stream"
 
 
 import type { TTSProvider } from "./tts.provider.js";
-import type { TTSProviderMetadata, TTSRequest, TTSResult } from "@repo/types/speech/generateSpeechRequest";
+import type { TTSProviderMetadata, TTSRequest, TTSResult } from "@repo/types/speech/tts.types";
 
 export class ElevenLabsProvider implements TTSProvider {
   readonly metadata: TTSProviderMetadata = {maxCharacters : 2500}; 

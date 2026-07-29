@@ -1,6 +1,6 @@
 import {protos, TextToSpeechClient } from "@google-cloud/text-to-speech";
 import type { TTSProvider } from "./tts.provider.js";
-import type { TTSProviderMetadata, TTSRequest, TTSResult } from "@repo/types/speech/generateSpeechRequest";
+import type { TTSProviderMetadata, TTSRequest, TTSResult } from "@repo/types/speech/tts.types";
 import { env } from "../../config/env.js";
 import { AppError } from "../../errors/appError.js";
 import { Readable } from "node:stream";
