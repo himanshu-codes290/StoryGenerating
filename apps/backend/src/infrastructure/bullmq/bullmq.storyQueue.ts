@@ -1,7 +1,7 @@
 // queue.ts
 import { Queue, QueueEvents } from 'bullmq';
-import { redisConnection } from '../config/redisConnection.js';
-import type { StoryJobData, StoryJobResult } from '../types/storyJob.type.js';
+import { redisConnection } from '../../config/redisConnection.js';
+import type { StoryJobData, StoryJobResult } from '../../types/storyJob.type.js';
 
 export const QUEUE_NAME = 'story-generation';
 

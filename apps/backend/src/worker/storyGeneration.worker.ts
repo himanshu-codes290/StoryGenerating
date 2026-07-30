@@ -1,7 +1,7 @@
 // worker.ts
 import { Worker, Job } from 'bullmq';
 import { redisConnection } from '../config/redisConnection.js';
-import { QUEUE_NAME } from '../infrastructure/bullmq.queue.js';
+import { QUEUE_NAME } from '../infrastructure/bullmq/bullmq.storyQueue.js';
 import type { StoryJobData, StoryJobResult } from '../types/storyJob.type.js';
 import { generateStory } from '../services/generateStory.service.js';
 

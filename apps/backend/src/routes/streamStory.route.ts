@@ -1,5 +1,5 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import { storyQueue, queueEvents } from "../infrastructure/bullmq.queue.js";
+import { storyQueue, queueEvents } from "../infrastructure/bullmq/bullmq.storyQueue.js";
 
 
 // 2. Real-time SSE Streaming Route

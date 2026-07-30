@@ -4,6 +4,8 @@ import {generateStoryRoutes} from "./routes/generateStory.route.js";
 import { errorHandler } from "./utils/errorHandler.js";
 import { streamStoryRoute } from "./routes/streamStory.route.js";
 import { generateSpeechRoute } from "./routes/generateSpeechFromText.route.js";
+import { generateTextRoutes } from "./routes/generateText.route.js"
+import { streamTextRoute } from "./routes/streamText.route.js";
 
 export function buildApp() {
   const app = Fastify({
@@ -21,6 +23,12 @@ export function buildApp() {
     prefix : "/api/v1"
   });
   app.register(generateSpeechRoute,{
+    prefix : "/api/v1"
+  });
+  app.register(generateTextRoutes,{
+    prefix : "/api/v1"
+  });
+  app.register(streamTextRoute,{
     prefix : "/api/v1"
   });
   return app;

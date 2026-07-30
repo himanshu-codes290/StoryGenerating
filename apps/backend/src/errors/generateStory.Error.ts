@@ -10,11 +10,6 @@ export class StoryGenerationError extends AppError {
   }
 }
 
-export class ValidationError extends AppError {
-  constructor(message: string) {
-    super(message, 400, "VALIDATION_ERROR");
-  }
-}
 
 export class groqError extends AppError {
     constructor(message : string) {

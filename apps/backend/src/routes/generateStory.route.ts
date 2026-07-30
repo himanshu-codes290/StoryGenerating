@@ -2,7 +2,7 @@ import type{FastifyInstance, FastifyRequest, FastifyReply} from "fastify";
 import { successResponse } from "../utils/apiResponse.js";
 
 import type { StoryJobData } from "../types/storyJob.type.js";
-import { storyQueue } from "../infrastructure/bullmq.queue.js";
+import { storyQueue } from "../infrastructure/bullmq/bullmq.storyQueue.js";
 
 
 // 1. Enqueue Request Route

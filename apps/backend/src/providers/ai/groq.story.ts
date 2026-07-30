@@ -1,5 +1,4 @@
 import { Groq } from "groq-sdk/client.js";
-import type { ChatCompletion } from "groq-sdk/resources/chat.js";
 
 import { env } from "../../config/env.js";
 import { groqError } from "../../errors/generateStory.Error.js";
