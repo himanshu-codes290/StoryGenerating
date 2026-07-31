@@ -2,6 +2,7 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getTextStreamKey, redisClient } from "../infrastructure/redis/textStream.redis.js";
 import { writeSSE } from "../utils/writeSSE.js";
 import type { StreamEvent } from "../infrastructure/redis/streamChannels.js";
+import { textQueue } from "../infrastructure/bullmq/bullmq.textGeneration.queue.js"
 
 export async function streamTextRoute(app: FastifyInstance) {
   app.get(
@@ -18,32 +19,72 @@ export async function streamTextRoute(app: FastifyInstance) {
         });
       }
 
-      reply.raw.writeHead(200, {
+        const job = await textQueue.getJob(jobId);
+
+        if (!job) {
+            return reply.code(404).send({
+                message: "Job not found",
+            });
+        }
+        
+        const state = await job.getState();
+
+        if (state === "failed") {
+        return reply.code(409).send({
+            message: job.failedReason ?? "Job failed",
+        });
+        }
+
+        const completed = state === "completed";
+
+
+    if (completed) {
+        reply.raw.writeHead(200, {
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache",
+            Connection: "keep-alive",
+        });
+
+        reply.raw.flushHeaders();
+        reply.hijack();
+
+        const result = job.returnvalue;
+
+        writeSSE(reply, {
+            type: "token",
+            data: result.textResult,
+        });
+
+        writeSSE(reply, {
+            type: "complete",
+        });
+
+        reply.raw.end();
+        return;
+    }
+
+    reply.raw.writeHead(200, {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
-      });
+    });
 
-      reply.raw.flushHeaders();
-      reply.hijack();
+    reply.raw.flushHeaders();
+    reply.hijack();
 
-      writeSSE(reply, {
-        type: "connected",
-      });
+    const redis = redisClient.duplicate();
+    let lastId = "0-0";
+    let closed = false;
 
-      const redis = redisClient.duplicate();
-
-      let lastId = "0-0";
-      let closed = false;
-
-      request.raw.on("close", () => {
+    request.raw.on("close", () => {
         closed = true;
         redis.disconnect();
-      });
+    });
 
-      const streamKey = getTextStreamKey(jobId);
+    const streamKey = getTextStreamKey(jobId);
 
-      while (!closed) {
+    try {
+        while (!closed) {
         const response = await redis.xread(
           "BLOCK",
           0,
@@ -60,7 +101,11 @@ export async function streamTextRoute(app: FastifyInstance) {
           for (const [id, fields] of entries) {
             lastId = id;
 
-            const rawEvent = fields[1];
+            const eventIndex = fields.indexOf("event");
+
+            if (eventIndex === -1) continue;
+
+            const rawEvent = fields[eventIndex + 1];
 
             if (!rawEvent)
                 continue
@@ -78,6 +123,12 @@ export async function streamTextRoute(app: FastifyInstance) {
           }
         }
       }
+    } finally
+    {
+            redisClient.disconnect();
+
+    }
+    
     }
   );
 }
