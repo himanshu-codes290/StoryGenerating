@@ -51,12 +51,12 @@ export async function processTextGenerationJob(
         if(err instanceof Error)
             await tokenhandler?.({
                 type: "error",
-                message: err.message,
+                data: err.message,
             });
         else
             await tokenhandler?.({
                 type: "error",
-                message: "Not instance of error message.",
+                data: "Not instance of error message.",
             });
     }   
     return {

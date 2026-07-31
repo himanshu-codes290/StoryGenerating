@@ -16,5 +16,5 @@ export type StreamEvent =
     }
   | {
       type: "error";
-      message: string;
+      data: string;
     };

@@ -8,6 +8,10 @@
       "types": "./speech/*.ts",
       "default": "./speech/*.js"
     },
+    "./request/*": {
+      "types": "./request/*.ts",
+      "default": "./request/*.js"
+    },
     "./api": {
       "types": "./api.types.ts",
       "default": "./api.types.js"

@@ -19,26 +19,26 @@ export async function streamTextRoute(app: FastifyInstance) {
         });
       }
 
-        const job = await textQueue.getJob(jobId);
+      const job = await textQueue.getJob(jobId);
 
-        if (!job) {
-            return reply.code(404).send({
-                message: "Job not found",
-            });
-        }
-        
-        const state = await job.getState();
+      if (!job) {
+          return reply.code(404).send({
+              message: "Job not found",
+          });
+      }
+      
+      const state = await job.getState();
 
-        if (state === "failed") {
-        return reply.code(409).send({
-            message: job.failedReason ?? "Job failed",
-        });
-        }
+      if (state === "failed") {
+      return reply.code(409).send({
+          message: job.failedReason ?? "Job failed",
+      });
+      }
 
-        const completed = state === "completed";
+      const completed = state === "completed";
 
 
-    if (completed) {
+      if (completed) {
         reply.raw.writeHead(200, {
             "Content-Type": "text/event-stream",
             "Cache-Control": "no-cache",
@@ -125,7 +125,7 @@ export async function streamTextRoute(app: FastifyInstance) {
       }
     } finally
     {
-            redisClient.disconnect();
+      redis.disconnect();
 
     }
     
