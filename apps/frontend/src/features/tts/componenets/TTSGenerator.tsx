@@ -7,6 +7,8 @@ import type { TTSRequest, TTSProviderName } from "@repo/types/speech/tts.types"
 import { useState } from "react";
 
 type TTSGeneratorProps = {
+    text: string;
+    onTextChange : (value: string) => void;
   onGenerate: (request: TTSRequest) => Promise<void>;
   loading: boolean;
 };
@@ -14,10 +16,10 @@ type TTSGeneratorProps = {
 
 export function TTSGenerator(props : TTSGeneratorProps)
 {
-    const [text, setText] = useState("");
     const [provider, setProvider] = useState<TTSProviderName>("deepgram");
 
     async function handleSubmit() {
+        const text = props.text;
         await props.onGenerate({
             text,
             provider,
@@ -27,14 +29,14 @@ export function TTSGenerator(props : TTSGeneratorProps)
     return (
         <div className="space-y-6">
         <Textarea 
-        value = {text}
-        onChange={(e)=>setText(e.target.value)}
+        value = {props.text}
+        onChange={(e)=>props.onTextChange(e.target.value)}
         placeholder="Enter the text you want to convert into speech. For example: Welcome to our podcast! Today we're exploring artificial intelligence..."
         className="min-h-40 resize-none"
         />
         <div className="flex justify-end">
         <p className="text-sm text-muted-foreground">
-            {text.length} characters
+            {props.text.length} characters
         </p>
         </div>
         {/* <DropdownMenu /> */}
@@ -50,7 +52,7 @@ export function TTSGenerator(props : TTSGeneratorProps)
             <option value="google_tts">Google TTS</option>
         </select>
         <Button 
-        disabled= {props.loading || text.trim().length===0 }
+        disabled= {props.loading || props.text.trim().length===0 }
         onClick={handleSubmit}
         >
             {props.loading && (
