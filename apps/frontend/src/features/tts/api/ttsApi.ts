@@ -1,6 +1,6 @@
 import type { TTSRequest } from "@repo/types/speech/tts.types";
 
-export async function generateSpeech( request : TTSRequest) : Promise<Blob>
+export async function generateSpeech( request : TTSRequest) : Promise<Response>
 {
     const response = await fetch("/api/v1/generate/speech",{
         method : "POST",
@@ -13,5 +13,5 @@ export async function generateSpeech( request : TTSRequest) : Promise<Blob>
     if (!response.ok) {
         throw new Error("failed to get data through backend.")
     }
-    return response.blob();
+    return response;
 }

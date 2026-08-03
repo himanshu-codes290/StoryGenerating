@@ -1,12 +1,12 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 
 type TTSAudioPlayerProps = {
-  audioUrl: string | null;
+   audioRef: React.RefObject<HTMLAudioElement | null>;
   error: string | null;
 };
 
-export function TTSAudioPlayer({audioUrl,error } : TTSAudioPlayerProps)
+export function TTSAudioPlayer({audioRef,error } : TTSAudioPlayerProps)
 {
     return (
         <div className="flex min-h-40 items-center justify-center rounded-lg border border-dashed p-6">
@@ -20,19 +20,19 @@ export function TTSAudioPlayer({audioUrl,error } : TTSAudioPlayerProps)
                 {error}
             </AlertDescription>
         </Alert>
-      ) : audioUrl ? (
+      ) : audioRef ? (
         <div className="flex flex-col gap-4">
-            <audio controls src={audioUrl}  className="w-full min-w-[300px]">
+            <audio controls ref={audioRef}  className="w-full min-w-[300px]">
             Your browser does not support the audio element.
             </audio>
-            <Button asChild className="w-fit">
+            {/* <Button asChild className="w-fit">
                 <a
-                    href={audioUrl}
+                    href={audioRef}
                     download="speech.mp3"
                 >
                     Download Audio
                 </a>
-            </Button>
+            </Button> */}
         </div>
       ) : (
         <div className="text-center text-muted-foreground">

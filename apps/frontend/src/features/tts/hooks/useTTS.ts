@@ -1,30 +1,23 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import type { TTSRequest } from "@repo/types/speech/tts.types";
 import { generateSpeech } from "@/features/tts/api/ttsApi";
+import { playStream } from "../utils/streamPlayer";
 
 export function useTTS() {
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Store the active Object URL to revoke it safely
-  const audioUrlRef = useRef<string | null>(null);
-
-  async function generate(request: TTSRequest) {
+  async function generate(
+    request: TTSRequest,
+    audio: HTMLAudioElement
+  ) {
     setLoading(true);
     setError(null);
 
     try {
-      const blob = await generateSpeech(request);
+      const response = await generateSpeech(request);
 
-      // Clean up previous URL if exists to avoid memory leaks
-      if (audioUrlRef.current) {
-        URL.revokeObjectURL(audioUrlRef.current);
-      }
-
-      const url = URL.createObjectURL(blob);
-      audioUrlRef.current = url;
-      setAudioUrl(url);
+      await playStream(response, audio);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -36,17 +29,7 @@ export function useTTS() {
     }
   }
 
-  // Component unmount hone par memory cleanup
-  useEffect(() => {
-    return () => {
-      if (audioUrlRef.current) {
-        URL.revokeObjectURL(audioUrlRef.current);
-      }
-    };
-  }, []);
-
   return {
-    audioUrl,
     loading,
     error,
     generate,

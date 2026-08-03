@@ -1,4 +1,4 @@
-import type { TTSRequest, TTSResult } from "@repo/types/speech/generateSpeechRequest"
+import type { TTSRequest, TTSResult } from "@repo/types/speech/tts.types"
 import { getTTSProvider } from "../providers/tts/registry.js";
 
 import { PassThrough } from "node:stream";

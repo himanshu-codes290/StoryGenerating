@@ -7,13 +7,13 @@ import { TTSGenerator } from "../features/tts/componenets/TTSGenerator"
 import { TTSAudioPlayer } from "../features/tts/componenets/TTSAudioPlayer"
 import { ScriptAssistantDrawer } from "@/features/tts/componenets/ScriptAssistantDrawer";
 import { useTTS } from "@/features/tts/hooks/useTTS";
-import { useState } from "react";
-
+import { useState, useRef } from "react";
 
 export function TextToSpeechPage()
 {
-    const { audioUrl, loading, error, generate} = useTTS();
+    const {loading, error, generate} = useTTS();
     const [text, setText] = useState("");
+    const audioRef = useRef<HTMLAudioElement>(null);
 
     const [assistantOpen, setAssistantOpen] = useState(false);
 
@@ -28,13 +28,16 @@ export function TextToSpeechPage()
                     <TTSGenerator
                     text={text}
                     onTextChange={setText}
-                    onGenerate={ generate}
+                    onGenerate={ async (request) => {
+                        if (!audioRef.current) return;
+                        await generate(request, audioRef.current);
+                    }}
                     loading= {loading}
                     />
                 </Card>
                 <Card className="p-4 mt-4">
                     <TTSAudioPlayer
-                        audioUrl={audioUrl}
+                        audioRef={audioRef}
                         error={error}
                     />
                 </Card>
