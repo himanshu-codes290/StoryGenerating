@@ -2,9 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 // import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
-import type { TTSProviderName } from "@repo/types/speech/tts.types"
 
-import { useState } from "react";
 
 type TTSGeneratorProps = {
     text: string;
@@ -16,7 +14,6 @@ type TTSGeneratorProps = {
 
 export function TTSGenerator(props : TTSGeneratorProps)
 {
-    const [provider, setProvider] = useState<TTSProviderName>("deepgram");
 
     async function handleSubmit() {
        await props.onGenerate();

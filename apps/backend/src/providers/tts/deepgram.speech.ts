@@ -3,6 +3,7 @@ import type { TTSProviderMetadata, TTSRequest, TTSResult } from "@repo/types/spe
 import { env } from "../../config/env.js"
 
 import { DeepgramClient } from "@deepgram/sdk";
+import {TTS_PROVIDERS} from "../../../../../packages/shared/tts/tts.config.js"
 import {Readable} from "node:stream";
 
 export class DeepgramProvider implements TTSProvider {
@@ -10,10 +11,14 @@ export class DeepgramProvider implements TTSProvider {
   readonly metadata: TTSProviderMetadata = {maxCharacters : 2000 };
   async generate(request: TTSRequest): Promise<TTSResult> {
 
+    const voice = TTS_PROVIDERS
+    .find(p => p.id === "deepgram")
+    ?.voices.find(v => v.id === request.voice);
+
     const deepgram =new DeepgramClient({apiKey : env.DEEPGRAM_API_KEY});
     const response = await deepgram.speak.v1.audio.generate({ 
       text: request.text,
-      model: request.model ?? "aura-2-thalia-en",
+      model: voice?.providerModelId ?? "aura-2-thalia-en",
     });
 
     const webstream = await response.stream();

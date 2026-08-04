@@ -5,7 +5,7 @@ export interface validationResult{
     reason? : string
 }
 const MIN_PROMPT_WORDS = 5;
-const MAX_PROMPT_LENGTH = 300;
+const MAX_PROMPT_LENGTH = 1000;
 
 export function validatePromptInput(prompt : string) : validationResult
 {

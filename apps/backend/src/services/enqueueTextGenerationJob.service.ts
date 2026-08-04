@@ -1,4 +1,3 @@
-// services/generateText.service.ts
 
 import {
   textQueue,

@@ -3,22 +3,48 @@ import { env } from "../../config/env.js";
 import {Readable} from "node:stream"
 
 
-
+import {TTS_PROVIDERS} from "../../../../../packages/shared/tts/tts.config.js"
 import type { TTSProvider } from "./tts.provider.js";
 import type { TTSProviderMetadata, TTSRequest, TTSResult } from "@repo/types/speech/tts.types";
 
 export class ElevenLabsProvider implements TTSProvider {
   readonly metadata: TTSProviderMetadata = {maxCharacters : 2500}; 
+
+    private readonly client = new ElevenLabsClient({
+      apiKey: env.ELEVENLABS_API_KEY!,
+    });
   async generate(request: TTSRequest): Promise<TTSResult> {
     if (!env.ELEVENLABS_API_KEY) {
     throw new Error("ELEVENLABS_API_KEY is missing");
     }
-    const elevenlabs = new ElevenLabsClient({
-      apiKey: env.ELEVENLABS_API_KEY,
-    });
+    // const elevenlabs = new ElevenLabsClient({
+    //   apiKey: env.ELEVENLABS_API_KEY,
+    // });
+    const provider = TTS_PROVIDERS.find(
+      (p) => p.id === "elevenlabs"
+    );
 
+    if (!provider) {
+      throw new Error("ElevenLabs provider configuration not found.");
+    }
 
-    const audioStream = await elevenlabs.textToSpeech.stream("JBFqnCBsd6RMkjVDRZzb", {
+    const voice = provider.voices.find(
+      (v) => v.id === request.voice
+    );
+
+    if (!voice) {
+      throw new Error(
+        `Voice '${request.voice}' is not supported by ElevenLabs.`
+      );
+    }
+    if(!voice.providerVoiceId)
+    {
+      throw new Error(
+        `Voice '${request.voice}' is not supported by ElevenLabs.`
+      );
+    }
+
+    const audioStream = await this.client.textToSpeech.stream( voice.providerVoiceId!, {
       modelId: "eleven_v3",
       text : request.text,
       outputFormat: "mp3_44100_128",

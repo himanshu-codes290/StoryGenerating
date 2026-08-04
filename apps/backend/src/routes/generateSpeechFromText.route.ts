@@ -5,19 +5,26 @@ import { generateSpeech } from "../services/generateTextToSpeech.service.js";
 export async function generateSpeechRoute(app : FastifyInstance)
 {
     app.post("/generate/speech", async (request : FastifyRequest<{Body : TTSRequest }>, reply : FastifyReply) => {
-        // const { text } = request.body as { text: string };
+        
+        const { text, provider, language, voice } = request.body;
 
-        // const stream = await createAudioStreamFromText(text);
+        if (!text.trim()) {
+        return reply.code(400).send({ message: "Text is required" });
+        }
 
+        if (!provider) {
+        return reply.code(400).send({ message: "Provider is required" });
+        }
 
-        // reply.header("Content-Type", "audio/mpeg");
-        // reply.header("Transfer-Encoding", "chunked");
+        if (!language) {
+        return reply.code(400).send({ message: "Language is required" });
+        }
 
-        // for await (const chunk of stream) {
-        //     reply.raw.write(chunk);
-        // }
+        if (!voice) {
+        return reply.code(400).send({ message: "Voice is required" });
+        }
 
-        // reply.raw.end();
+        
         const result = await generateSpeech(request.body);
 
         reply.header("Content-Type", result.contentType);

@@ -9,8 +9,8 @@ export type TTSProviderName = "deepgram" | "elevenlabs" | "google_tts";
 export type TTSRequest = {
   text: string;
   provider: TTSProviderName;
+  language : string;
   voice?: string;
-  model? : string;
 };
 
 export type TTSResult<T = Record<string, unknown>> = {

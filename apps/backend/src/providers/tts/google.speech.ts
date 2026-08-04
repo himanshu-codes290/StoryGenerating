@@ -4,6 +4,7 @@ import type { TTSProviderMetadata, TTSRequest, TTSResult } from "@repo/types/spe
 import { env } from "../../config/env.js";
 import { AppError } from "../../errors/appError.js";
 import { Readable } from "node:stream";
+import {TTS_PROVIDERS} from "../../../../../packages/shared/tts/tts.config.js"
 
 export class googleProvider implements TTSProvider
 {
@@ -25,15 +26,41 @@ export class googleProvider implements TTSProvider
             throw new AppError("Invalid Api Key",500,"INVALID_API_KEY")
         }
 
-        // const client = new TextToSpeechClient({apiKey : env.GOOGLE_TTS_API_KEY});
+          const provider = TTS_PROVIDERS.find(
+            (p) => p.id === "google_tts"
+        );
+
+        if (!provider) {
+            throw new AppError(
+                "Google provider configuration not found.",
+                500,
+                "GOOGLE_PROVIDER_NOT_FOUND"
+            );
+        }
+
+        const voice = provider.voices.find(
+            (v) => v.id === request.voice
+        );
+
+        if (!voice) {
+            throw new AppError(
+                "Invalid Google voice.",
+                400,
+                "INVALID_VOICE"
+            );
+        }
+        const langCode = voice.providerVoiceId!
+            .split("-")
+            .slice(0, 2)
+            .join("-");
 
         const send : protos.google.cloud.texttospeech.v1.ISynthesizeSpeechRequest = {
             input: {
             text: request.text
             },
             voice: {
-            languageCode: "en-US",
-            name: "en-US-Neural2-F"
+            languageCode: langCode || "en-US",
+            name: voice.providerVoiceId || "en-US-Neural2-F"
             },
             audioConfig: {
             audioEncoding: "MP3" as const
