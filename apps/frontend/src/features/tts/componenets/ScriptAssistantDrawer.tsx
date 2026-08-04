@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Select,  SelectContent,  SelectItem,  SelectTrigger,  SelectValue, } from "@/components/ui/select";
 
 import { generateText } from "../api/generateTextApi";
 import { useRef, useEffect } from "react";
@@ -19,6 +20,8 @@ type ScriptAssistantDrawerProps = {
 export function ScriptAssistantDrawer({open , onOpenChange, onUseScript} : ScriptAssistantDrawerProps)
 {
     const [idea, setIdea] = useState("");
+    const [task, setTask] = useState("write");
+    const [tone, setTone] = useState("professional");
     const [generatedScript, setGeneratedScript] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -40,7 +43,8 @@ export function ScriptAssistantDrawer({open , onOpenChange, onUseScript} : Scrip
             const stopStreaming = await generateText(
                 {
                     text: idea,
-                    task: "tts_script",
+                    task: task,
+                    tone : tone
                 },
                 {
                     onToken(token) {
@@ -99,10 +103,63 @@ export function ScriptAssistantDrawer({open , onOpenChange, onUseScript} : Scrip
                         id="idea"
                         value={idea}
                         onChange={(e) => setIdea(e.target.value)}
-                        placeholder="Example: Write a motivational speech for software engineers beginning their careers."
+                         placeholder={
+                            task === "summarize"
+                            ? "Paste the text you want to summarize..."
+                            : task === "rewrite"
+                            ? "Paste the text you want to rewrite..."
+                            : task === "translate"
+                            ? "Enter the text to translate..."
+                            : "Describe what you want AI to write..."
+                        }
                         className="min-h-32 resize-none"
                         />
+                        <div
+                        className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+                        >
+                            <div className="space-y-2">
+                                <Label htmlFor="task">Task</Label>
 
+                                <Select value={task} onValueChange={setTask}>
+                                    <SelectTrigger id="task">
+                                    <SelectValue placeholder="Select a task" />
+                                    </SelectTrigger>
+
+                                    <SelectContent>
+                                    <SelectItem value="write">✍️ Write</SelectItem>
+                                    <SelectItem value="summarize">📝 Summarize</SelectItem>
+                                    <SelectItem value="rewrite">🔄 Rewrite</SelectItem>
+                                    <SelectItem value="improve">✨ Improve Writing</SelectItem>
+                                    <SelectItem value="translate">🌐 Translate</SelectItem>
+                                    <SelectItem value="paraphrase">♻️ Paraphrase</SelectItem>
+                                    <SelectItem value="expand">📖 Expand</SelectItem>
+                                    <SelectItem value="shorten">📄 Shorten</SelectItem>
+                                    <SelectItem value="explain">💡 Explain</SelectItem>
+                                    <SelectItem value="brainstorm">🧠 Brainstorm Ideas</SelectItem>
+                                    <SelectItem value="generate">⚡ Generate Content</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="tone">Tone</Label>
+
+                                <Select value={tone} onValueChange={setTone}>
+                                    <SelectTrigger id="tone">
+                                    <SelectValue placeholder="Select a tone" />
+                                    </SelectTrigger>
+
+                                    <SelectContent>
+                                    <SelectItem value="professional">
+                                        💼 Professional
+                                    </SelectItem>
+
+                                    <SelectItem value="casual">
+                                        😊 Casual
+                                    </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
                     </div>
 
                     <Button
