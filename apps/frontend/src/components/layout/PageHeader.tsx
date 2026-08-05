@@ -12,7 +12,7 @@ export function PageHeader({title,description, className=''}:PageHeaderProps)
             className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-700 sm:text-3xl"
             >{title}</h1>
             { description && <p
-            className="text-sm text-gray-500 dark:text-gray-400 sm:text-base"
+            className="text-sm text-gray-500 dark:text-gray-400 sm:text-base ml-4"
             >{description}</p>}
         </header>
 )};

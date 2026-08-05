@@ -1,9 +1,8 @@
 import type{FastifyInstance, FastifyRequest, FastifyReply} from "fastify";
-import {generateStory, type storyGenerateObj} from "../services/generateStory.service.js"
-import { errorResponse, successResponse } from "../utils/apiResponse.js";
-import { AppError } from "../errors/appError.js";
+import { successResponse } from "../utils/apiResponse.js";
+
 import type { StoryJobData } from "../types/storyJob.type.js";
-import { storyQueue } from "../infrastructure/bullmq.queue.js";
+import { storyQueue } from "../infrastructure/bullmq/bullmq.storyQueue.js";
 
 
 // 1. Enqueue Request Route
@@ -15,7 +14,7 @@ export async function generateStoryRoutes(app : FastifyInstance) {
     //     return reply.send(successResponse({story}));
     // });
 
-    app.post('/stories/generate', async (request: FastifyRequest<{ Body: StoryJobData }>, reply: FastifyReply) => {
+    app.post('/generate/stories', async (request: FastifyRequest<{ Body: StoryJobData }>, reply: FastifyReply) => {
         const { prompt } = request.body || {};
 
         if (!prompt) {

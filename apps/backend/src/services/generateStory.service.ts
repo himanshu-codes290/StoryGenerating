@@ -1,6 +1,6 @@
-import { groqStoryGenerator } from "../providers/groq.story.js";
+import { groqStoryGenerator } from "../providers/ai/groq.story.js";
 import { validatePrompt } from "./validateStory.service.js";
-import { ValidationError } from "../errors/generateStory.Error.js";
+import { ValidationError } from "../errors/appError.js";
 
 export interface storyGenerateObj {
     prompt:string

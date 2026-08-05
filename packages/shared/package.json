@@ -1,0 +1,17 @@
+{
+  "name": "@repo/shared",
+  "version": "1.0.0",
+  "description": "contain the shared code",
+  "type": "module",
+  "private" : true,
+  "exports": {
+    ".": {
+      "types": "./index.ts",
+      "default": "./index.ts"
+    },
+    "./tts": {
+      "types": "./tts/index.ts",
+      "default": "./tts/index.ts"
+    }
+  }
+}

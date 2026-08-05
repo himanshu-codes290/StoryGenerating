@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { StoryGenerator } from "../features/stories/components/StoryGenerator.tsx";
 import { StoryOutput } from "../features/stories/components/StoryOutput.tsx";
+import { SpeechGenerator } from "@/features/stories/components/SpeechGenerator.tsx";
 import { generateStory } from "../features/stories/api/storyApi.ts"
 
 import { Container } from "../components/layout/Container.tsx";
@@ -59,6 +60,14 @@ export function StoryPage()
                     <StoryOutput 
                     story={story}
                     error={error}
+                    />
+                </Card>
+                <Card
+                className="justify-start"
+                >
+                    <SpeechGenerator
+                    story={story}
+                    error = {error}
                     />
                 </Card>
             </Container>

@@ -1,0 +1,23 @@
+{
+  "name": "@repo/types",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    "./speech/*": {
+      "types": "./speech/*.ts",
+      "default": "./speech/*.js"
+    },
+    "./request/*": {
+      "types": "./request/*.ts",
+      "default": "./request/*.js"
+    },
+    "./api": {
+      "types": "./api.types.ts",
+      "default": "./api.types.js"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3"
+  }
+}
