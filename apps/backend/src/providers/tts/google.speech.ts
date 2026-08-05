@@ -1,10 +1,10 @@
 import {protos, TextToSpeechClient } from "@google-cloud/text-to-speech";
 import type { TTSProvider } from "./tts.provider.js";
-import type { TTSProviderMetadata, TTSRequest, TTSResult } from "@repo/types/speech/tts.types";
+import type { TTSProviderMetadata, TTSRequest, TTSResult } from "@repo/types";
 import { env } from "../../config/env.js";
 import { AppError } from "../../errors/appError.js";
 import { Readable } from "node:stream";
-import {TTS_PROVIDERS} from "../../../../../packages/shared/tts/tts.config.js"
+import {TTS_PROVIDERS} from "@repo/shared"
 
 export class googleProvider implements TTSProvider
 {

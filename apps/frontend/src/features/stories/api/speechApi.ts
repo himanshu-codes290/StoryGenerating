@@ -1,4 +1,4 @@
-// import type {generateSpeechRequest} from "../../../../../packages/types/speech/generateSpeechRequest";
+
 
 export const playSpeech = async (text : string) => {
     // const request : generateSpeechRequest = {

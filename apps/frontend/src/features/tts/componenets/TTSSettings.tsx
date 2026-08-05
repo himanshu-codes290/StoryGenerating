@@ -1,9 +1,9 @@
-import type { TTSProviderName } from "@repo/types/speech/tts.types";
+import type { TTSProviderName } from "@repo/types";
 import type {
   TTSLanguage,
   TTSProviderConfig,
   TTSVoice,
-} from "../../../../../../packages/shared";
+} from "@repo/shared";
 
 import {
   Select,

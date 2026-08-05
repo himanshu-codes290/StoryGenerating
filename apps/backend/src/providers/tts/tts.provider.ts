@@ -1,4 +1,4 @@
-import type { TTSRequest, TTSResult, TTSProviderMetadata } from "@repo/types/speech/tts.types"
+import type { TTSRequest, TTSResult, TTSProviderMetadata } from "@repo/types"
 import { getTTSProvider } from "./registry.js";
 /**
  * Every Text-to-Speech provider must implement this contract.

@@ -1,4 +1,4 @@
-import type { ApiResponse } from "../../../packages/types/api.types.js";
+import type { ApiResponse } from "@repo/types";
 
 export function successResponse<T>(data: T) : ApiResponse<T>
 {

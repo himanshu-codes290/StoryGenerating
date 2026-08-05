@@ -1,7 +1,7 @@
 import type{FastifyInstance, FastifyRequest, FastifyReply} from "fastify";
 import { successResponse } from "../utils/apiResponse.js";
 
-import type { generateTextRequest } from "@repo/types/request/generateTextRequest.type"
+import type { generateTextRequest } from "@repo/types"
 import { enqueueTextGeneration } from "../services/enqueueTextGenerationJob.service.js";
 
 
