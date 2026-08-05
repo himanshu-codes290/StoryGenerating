@@ -4,7 +4,7 @@ import {
   GENERATE_TEXT_JOB,
 } from "../infrastructure/bullmq/bullmq.textGeneration.queue.js";
 
-import type { generateTextRequest } from "@repo/types/request/generateTextRequest.type";
+import type { generateTextRequest } from "@repo/types";
 
 export async function enqueueTextGeneration(
   request: generateTextRequest

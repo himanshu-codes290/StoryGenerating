@@ -1,5 +1,5 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import type { TTSRequest, TTSResult} from "@repo/types/speech/tts.types"
+import type { TTSRequest, TTSResult} from "@repo/types"
 import { generateSpeech } from "../services/generateTextToSpeech.service.js";
 
 export async function generateSpeechRoute(app : FastifyInstance)

@@ -1,5 +1,6 @@
 import type { GenerateStoryRequest, GenerateStoryResponse } from "../types/story.types";
-import type {ApiResponse} from "../../../../../packages/types/api.types"
+import type {ApiResponse} from "@repo/types"
+
 
 export async function generateStory(
     request : GenerateStoryRequest

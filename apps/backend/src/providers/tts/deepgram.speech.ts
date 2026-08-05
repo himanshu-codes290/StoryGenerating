@@ -1,9 +1,9 @@
 import type { TTSProvider } from "./tts.provider.js";
-import type { TTSProviderMetadata, TTSRequest, TTSResult } from "@repo/types/speech/tts.types"
+import type { TTSProviderMetadata, TTSRequest, TTSResult } from "@repo/types"
 import { env } from "../../config/env.js"
 
 import { DeepgramClient } from "@deepgram/sdk";
-import {TTS_PROVIDERS} from "../../../../../packages/shared/tts/tts.config.js"
+import {TTS_PROVIDERS} from "@repo/shared"
 import {Readable} from "node:stream";
 
 export class DeepgramProvider implements TTSProvider {

@@ -8,10 +8,10 @@ import { TTSAudioPlayer } from "../features/tts/componenets/TTSAudioPlayer"
 import { ScriptAssistantDrawer } from "@/features/tts/componenets/ScriptAssistantDrawer";
 import { useTTS } from "@/features/tts/hooks/useTTS";
 import { useState, useEffect, useRef } from "react";
-import type { TTSProviderName } from "@repo/types/speech/tts.types";
-import { TTS_PROVIDERS } from "../../../../packages/shared";
+import type { TTSProviderName } from "@repo/types";
+import { TTS_PROVIDERS } from "@repo/shared";
 import { TTSSettings } from "@/features/tts/componenets/TTSSettings";
-import { TTS_LANGUAGES } from "../../../../packages/shared";
+import { TTS_LANGUAGES } from "@repo/shared";
 
 export function TextToSpeechPage()
 {

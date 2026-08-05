@@ -8,11 +8,11 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace"
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present"
   },
   "license": "ISC",
-  "dependencies": {
-    "@deepgram/sdk": "^5.7.0",
-    "@google-cloud/text-to-speech": "^6.4.1"
+  "devDependencies": {
+    "typescript": "^5.0.0"
   }
 }
