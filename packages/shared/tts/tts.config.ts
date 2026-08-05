@@ -1,4 +1,4 @@
-import { TTSProviderConfig } from "./tts.types.js";
+import type { TTSProviderConfig } from "./tts.types.js";
 import { DEEPGRAM_VOICES } from "./deepgram/voice.js";
 import { ELEVENLABS_VOICES } from "./elevenlabs/voice.js";
 import { GOOGLE_TTS_VOICES } from "./google/voice.js";

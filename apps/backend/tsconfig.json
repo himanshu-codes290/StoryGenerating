@@ -43,13 +43,16 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
+    //build error fix : build file in ./dist folder
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationDir": "./dist"
   },
   "include": [
     "src/**/*.ts"
   ],
   "baseUrl": ".",
   "paths": {
-    "@repo/types/*": ["../../packages/types/*"],
-    "@repo/shared/*": ["../../packages/shared/*"]
   }
 }

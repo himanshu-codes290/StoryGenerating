@@ -1,4 +1,4 @@
-import type { Readable } from "node:stream"
+
 
 export interface generateSpeechRequest {
     text : string
@@ -14,7 +14,7 @@ export type TTSRequest = {
 };
 
 export type TTSResult<T = Record<string, unknown>> = {
-  stream :  Readable;
+  stream :  ReadableStream;
   contentType: string;
   metadata? : T;
 };
