@@ -1,13 +1,9 @@
-
-
 export async function playStream(
   response: Response,
   audio: HTMLAudioElement
-) {
+): Promise<{ blobUrl: string; blob: Blob }> {
   const mediaSource = new MediaSource();
-
   audio.src = URL.createObjectURL(mediaSource);
-
 
   await new Promise<void>((resolve) => {
     mediaSource.addEventListener("sourceopen", () => resolve(), {
@@ -17,43 +13,36 @@ export async function playStream(
 
   audio.addEventListener(
     "canplay",
-        () => {
-            console.log("canplay fired");
-            audio.play().catch(console.error);
-        },
-        { once: true }
-    );
-//   audio.play().catch(console.error);
+    () => {
+      audio.play().catch(console.error);
+    },
+    { once: true }
+  );
 
   const sourceBuffer = mediaSource.addSourceBuffer("audio/mpeg");
-
   const reader = response.body!.getReader();
+  const chunks: Uint8Array[] = [];
 
   while (true) {
-  const { done, value } = await reader.read();
-    // console.log("Appending", value?.length, "bytes");''
-  if (done) {
-    if (mediaSource.readyState === "open") {
-       mediaSource.endOfStream();
+    const { done, value } = await reader.read();
+    if (done) {
+      if (mediaSource.readyState === "open") {
+        mediaSource.endOfStream();
+      }
+      break;
     }
-    // console.log("Stream finished");
-    break;
+    if (value) {
+      chunks.push(value);
+      await new Promise<void>((resolve) => {
+        sourceBuffer.addEventListener("updateend", () => resolve(), {
+          once: true,
+        });
+        sourceBuffer.appendBuffer(value);
+      });
+    }
   }
 
-  await new Promise<void>((resolve) => {
-    sourceBuffer.addEventListener("updateend", () => resolve(), {
-      once: true,
-    });
-
-    sourceBuffer.appendBuffer(value);
-
-      console.log(
-        "readyState:",
-        audio.readyState,
-        "paused:",
-        audio.paused
-        );
-  });
-
-}
+  const audioBlob = new Blob(chunks as BlobPart[], { type: "audio/mpeg" });
+  const blobUrl = URL.createObjectURL(audioBlob);
+  return { blobUrl, blob: audioBlob };
 }
