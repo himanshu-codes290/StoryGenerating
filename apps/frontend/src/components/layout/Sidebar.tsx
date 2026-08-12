@@ -4,6 +4,7 @@ import {
   BookOpen, 
   Mic, 
   Sparkles, 
+  Bot,
   ChevronLeft, 
   ChevronRight
 } from "lucide-react";
@@ -24,10 +25,16 @@ export function SidebarContent({ onNavigate, collapsed }: { onNavigate?: () => v
       badge: null,
     },
     {
+      to: "/script-assistant",
+      label: "Script Assistant",
+      icon: Bot,
+      badge: "AI",
+    },
+    {
       to: "/story",
       label: "Story Generator",
       icon: BookOpen,
-      badge: "AI",
+      badge: null,
     },
     {
       to: "/tts",

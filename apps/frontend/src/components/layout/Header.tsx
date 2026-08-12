@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { Menu, ChevronRight, Sparkles, BookOpen, Mic, LayoutDashboard } from "lucide-react";
+import { Menu, ChevronRight, Sparkles, BookOpen, Mic, LayoutDashboard, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeToggle } from "./ThemeToggle";
@@ -11,6 +11,11 @@ const routeMeta: Record<string, { title: string; subtitle: string; icon: any }> 
     title: "Dashboard Overview",
     subtitle: "Welcome to your AI Story & Voice Workspace",
     icon: LayoutDashboard,
+  },
+  "/script-assistant": {
+    title: "Script Assistant Studio",
+    subtitle: "Draft, summarize, translate, or refine AI scripts",
+    icon: Bot,
   },
   "/story": {
     title: "Story Studio",

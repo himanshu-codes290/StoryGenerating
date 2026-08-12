@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { TTSGenerator } from "../features/tts/componenets/TTSGenerator";
 import { TTSAudioPlayer } from "../features/tts/componenets/TTSAudioPlayer";
@@ -10,8 +11,22 @@ import { TTS_PROVIDERS, TTS_LANGUAGES } from "@repo/shared";
 import { Mic, Sparkles } from "lucide-react";
 
 export function TextToSpeechPage() {
+  const location = useLocation();
   const { loading, error, audioUrl, generate } = useTTS();
-  const [text, setText] = useState("");
+  const [text, setText] = useState(
+    () => (location.state as { text?: string; script?: string })?.text ||
+          (location.state as { text?: string; script?: string })?.script ||
+          ""
+  );
+
+  useEffect(() => {
+    const state = location.state as { text?: string; script?: string } | null;
+    if (state?.text) {
+      setText(state.text);
+    } else if (state?.script) {
+      setText(state.script);
+    }
+  }, [location.state]);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [language, setLanguage] = useState("en");

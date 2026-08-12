@@ -23,7 +23,9 @@ export async function generateStoryRoutes(app : FastifyInstance) {
 
         const job = await storyQueue.add('generate-story', { prompt });
 
-        return reply.send(successResponse({jobId: job.id,
-        streamUrl: `api/v1/stories/stream/${job.id}`,}))
+        return reply.send(successResponse({
+          jobId: job.id,
+          streamUrl: `/api/v1/stories/stream/${job.id}`,
+        }));
     });
 }

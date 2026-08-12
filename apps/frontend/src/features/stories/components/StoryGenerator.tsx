@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -7,11 +7,18 @@ import { Wand2, Type } from "lucide-react";
 interface StoryGeneratorProps {
   onGenerate: (story: string) => Promise<void>;
   loading: boolean;
+  initialPrompt?: string;
 }
 
-export function StoryGenerator({ onGenerate, loading }: StoryGeneratorProps) {
-  const [prompt, setPrompt] = useState("");
+export function StoryGenerator({ onGenerate, loading, initialPrompt = "" }: StoryGeneratorProps) {
+  const [prompt, setPrompt] = useState(initialPrompt);
   const maxLength = 300;
+
+  useEffect(() => {
+    if (initialPrompt) {
+      setPrompt(initialPrompt);
+    }
+  }, [initialPrompt]);
 
   async function handleSubmit() {
     if (prompt.trim().length === 0) return;

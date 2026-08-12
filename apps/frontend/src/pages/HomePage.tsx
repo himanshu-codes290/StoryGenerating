@@ -156,8 +156,8 @@ export function HomePage() {
                 </li>
               </ul>
               <Button asChild variant="secondary" className="w-full">
-                <Link to="/tts" className="flex items-center justify-center gap-2">
-                  Try Script Assistant
+                <Link to="/script-assistant" className="flex items-center justify-center gap-2">
+                  Launch Script Assistant
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>

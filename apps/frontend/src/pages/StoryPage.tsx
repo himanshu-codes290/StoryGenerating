@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { StoryGenerator } from "../features/stories/components/StoryGenerator";
 import { StoryOutput } from "../features/stories/components/StoryOutput";
 import { SpeechGenerator } from "@/features/stories/components/SpeechGenerator";
@@ -7,6 +8,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, Sparkles } from "lucide-react";
 
 export function StoryPage() {
+  const location = useLocation();
+  const initialPrompt =
+    (location.state as { prompt?: string; script?: string })?.prompt ||
+    (location.state as { prompt?: string; script?: string })?.script ||
+    "";
+
   const [story, setStory] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +66,11 @@ export function StoryPage() {
       {/* Main Generator Input Card */}
       <Card className="border-border/60 shadow-md">
         <CardContent className="p-6 sm:p-8">
-          <StoryGenerator onGenerate={handleGenerate} loading={loading} />
+          <StoryGenerator
+            onGenerate={handleGenerate}
+            loading={loading}
+            initialPrompt={initialPrompt}
+          />
         </CardContent>
       </Card>
 
