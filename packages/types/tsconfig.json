@@ -5,7 +5,11 @@
     "moduleResolution": "NodeNext",
     "types": ["node"],
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    // File Layout
+    "rootDir": "./",
+    "outDir": "./dist",
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts"],
+  "exclude": ["dist", "node_modules", "**/*.spec.ts", "**/*.test.ts"]
 }

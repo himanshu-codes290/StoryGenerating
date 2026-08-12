@@ -6,6 +6,9 @@
   ],
   /* Shadcn ui */
   "compilerOptions": {
+  // File Layout
+  "rootDir": "./src",
+  "outDir": "./dist",
   "paths": {
     "@/*": ["./src/*"]
   }
