@@ -7,5 +7,9 @@ export const env = {
     ELEVENLABS_API_KEY : process.env.ELEVENLABS_API_KEY,
     DEEPGRAM_API_KEY : process.env.DEEPGRAM_API_KEY,
     GOOGLE_TTS_API_KEY : process.env.GOOGLE_TTS_API_KEY,
-    FALBACK_TEXT_MODEL : "groq"
+    FALBACK_TEXT_MODEL : "groq",
+    // Redis — set REDIS_URL for Upstash cloud (rediss://...), or use host/port for local
+    REDIS_URL : process.env.REDIS_URL,
+    REDIS_HOST : process.env.REDIS_HOST ?? "127.0.0.1",
+    REDIS_PORT : Number(process.env.REDIS_PORT ?? 6379),
 };
