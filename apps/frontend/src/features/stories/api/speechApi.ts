@@ -1,10 +1,11 @@
 
+import { API_BASE_URL } from "../../../lib/apiConfig";
 
 export const playSpeech = async (text : string) => {
     // const request : generateSpeechRequest = {
     //     text : text
     // }
-  const response = await fetch("/api/v1/generate/speech", {
+  const response = await fetch(`${API_BASE_URL}/api/v1/generate/speech`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

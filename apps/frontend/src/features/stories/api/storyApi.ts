@@ -1,11 +1,12 @@
 import type { GenerateStoryRequest, GenerateStoryResponse } from "../types/story.types";
 import type { ApiResponse } from "@repo/types";
+import { API_BASE_URL } from "../../../lib/apiConfig";
 
 export async function generateStory(
   request: GenerateStoryRequest
 ): Promise<GenerateStoryResponse> {
   // 1. Submit the task to queue
-  const response = await fetch("/api/v1/generate/stories", {
+  const response = await fetch(`${API_BASE_URL}/api/v1/generate/stories`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
@@ -28,7 +29,7 @@ export async function generateStory(
 
   // 2. Wrap EventSource in a Promise to return GenerateStoryResponse smoothly
   return new Promise((resolve, reject) => {
-    const eventSource = new EventSource(url);
+    const eventSource = new EventSource(`${API_BASE_URL}${url}`);
 
     // Stream status update (Optional: pass to a callback if you want UI progress)
     eventSource.addEventListener("status", (e) => {

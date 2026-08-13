@@ -1,10 +1,11 @@
 import type { GenerateTextRequest, GenerateTextCallbacks } from "../types/generateText.types";
+import { API_BASE_URL } from "../../../lib/apiConfig";
 
 export async function generateText(
   request: GenerateTextRequest,
   callbacks: GenerateTextCallbacks
 ): Promise<() => void> {
-  const response = await fetch("/api/v1/generate/text", {
+  const response = await fetch(`${API_BASE_URL}/api/v1/generate/text`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -20,7 +21,7 @@ export async function generateText(
   const rawStreamUrl = body.data?.streamUrl ?? "";
   const streamUrl = rawStreamUrl.startsWith("/") ? rawStreamUrl : `/${rawStreamUrl}`;
 
-  const eventSource = new EventSource(streamUrl);
+  const eventSource = new EventSource(`${API_BASE_URL}${streamUrl}`);
 
   // data
   eventSource.addEventListener("token", (event) => {
