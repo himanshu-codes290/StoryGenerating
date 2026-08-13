@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 
 import { Label } from "@/components/ui/label";
+import { Globe, Cpu, Mic2 } from "lucide-react";
 
 type Props = {
   language: string;
@@ -43,88 +44,77 @@ export function TTSSettings({
   onVoiceChange,
 }: Props) {
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="rounded-xl border border-border/60 bg-muted/20 p-4 sm:p-5 space-y-4">
+      <div className="grid gap-4 sm:grid-cols-3">
+        {/* Language */}
+        <div className="space-y-2">
+          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+            <Globe className="h-3.5 w-3.5 text-indigo-500" />
+            Language
+          </Label>
 
-      {/* Language */}
+          <Select value={language} onValueChange={onLanguageChange}>
+            <SelectTrigger className="h-10 bg-background/80 border-border/80 rounded-lg">
+              <SelectValue placeholder="Select language" />
+            </SelectTrigger>
 
-      <div className="space-y-2">
-        <Label>Language</Label>
+            <SelectContent>
+              {languages.map((lang) => (
+                <SelectItem key={lang.id} value={lang.id}>
+                  {lang.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-        <Select
-          value={language}
-          onValueChange={onLanguageChange}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select language" />
-          </SelectTrigger>
+        {/* Provider */}
+        <div className="space-y-2">
+          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+            <Cpu className="h-3.5 w-3.5 text-indigo-500" />
+            TTS Provider Engine
+          </Label>
 
-          <SelectContent>
-            {languages.map((language) => (
-              <SelectItem
-                key={language.id}
-                value={language.id}
-              >
-                {language.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          <Select
+            value={provider}
+            onValueChange={(val) => onProviderChange(val as TTSProviderName)}
+          >
+            <SelectTrigger className="h-10 bg-background/80 border-border/80 rounded-lg font-medium">
+              <SelectValue placeholder="Select provider" />
+            </SelectTrigger>
+
+            <SelectContent>
+              {providers.map((prov) => (
+                <SelectItem key={prov.id} value={prov.id}>
+                  <span className="font-semibold">{prov.label}</span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Voice */}
+        <div className="space-y-2">
+          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+            <Mic2 className="h-3.5 w-3.5 text-indigo-500" />
+            Voice Model
+          </Label>
+
+          <Select value={voice} onValueChange={onVoiceChange}>
+            <SelectTrigger className="h-10 bg-background/80 border-border/80 rounded-lg font-medium">
+              <SelectValue placeholder="Select voice" />
+            </SelectTrigger>
+
+            <SelectContent>
+              {voices.map((v) => (
+                <SelectItem key={v.id} value={v.id}>
+                  {v.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
-
-      {/* Provider */}
-
-      <div className="space-y-2">
-        <Label>Provider</Label>
-
-        <Select
-          value={provider}
-          onValueChange={(value) =>
-            onProviderChange(value as TTSProviderName)
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select provider" />
-          </SelectTrigger>
-
-          <SelectContent>
-            {providers.map((provider) => (
-              <SelectItem
-                key={provider.id}
-                value={provider.id}
-              >
-                {provider.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Voice */}
-
-      <div className="space-y-2">
-        <Label>Voice</Label>
-
-        <Select
-          value={voice}
-          onValueChange={onVoiceChange}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select voice" />
-          </SelectTrigger>
-
-          <SelectContent>
-            {voices.map((voice) => (
-              <SelectItem
-                key={voice.id}
-                value={voice.id}
-              >
-                {voice.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
     </div>
   );
 }

@@ -26,8 +26,10 @@ export async function generateTextRoutes(app : FastifyInstance) {
 
         const job = await enqueueTextGeneration(request.body);
         
-        return reply.send(successResponse({jobId: job.id,
-            status : "queued",
-            streamUrl: `api/v1/stream/${job.id}/text`,}))
+        return reply.send(successResponse({
+          jobId: job.id,
+          status: "queued",
+          streamUrl: `/api/v1/stream/${job.id}/text`,
+        }));
     });
 }

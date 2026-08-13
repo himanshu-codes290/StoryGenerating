@@ -4,8 +4,7 @@ import { env } from "../../config/env.js";
 const groq = new Groq({ apiKey: env.GROQ_API_KEY });
 
 
-export async function moderateCheck(prompt:string) : Promise<string | null>
-{
+export async function moderateCheck(prompt: string): Promise<string | null> {
     const formattedContent = `[INST] Task: Check if there is unsafe content in 'User' message in accordance with our safety policy with the below categories.
 
         <BEGIN CATEGORIES CONTENT UNSAFE>
@@ -31,14 +30,14 @@ export async function moderateCheck(prompt:string) : Promise<string | null>
         - If User is unsafe, reply unsafe followed by a new line with a comma-separated list of violated categories. [/INST]`;
     try {
         const response = await groq.chat.completions.create({
-                                    messages: [
-                                    {
-                                        role: "user",
-                                        content: formattedContent,
-                                    },
-                                    ],
-                                    model: "openai/gpt-oss-safeguard-20b",
-                                });
+            messages: [
+                {
+                    role: "user",
+                    content: formattedContent,
+                },
+            ],
+            model: "openai/gpt-oss-safeguard-20b",
+        });
         const validation = response.choices[0]?.message.content;
         if (!validation) {
             throw new Error("Validation failed");

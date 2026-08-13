@@ -1,4 +1,4 @@
-import type { TTSProviderName } from "@repo/types/speech/tts.types";
+import type { TTSProviderName } from "@repo/types";
 
 
 export interface TTSLanguage {
