@@ -17,7 +17,7 @@ export function streamStoryRoute(app: FastifyInstance) {
 
             // The SSE routes call reply.raw.writeHead() which bypasses @fastify/cors.
             // We must manually add CORS headers here so the browser doesn't block the stream.
-            const corsOrigin = env.FRONTEND_ORIGIN.split(",")[0].trim();
+            const corsOrigin = (env.FRONTEND_ORIGIN.split(",")[0] ?? "*").trim();
 
             // Set proper HTTP headers for SSE
             reply.raw.writeHead(200, {
