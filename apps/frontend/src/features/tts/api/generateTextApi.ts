@@ -35,11 +35,29 @@ export async function generateText(
     eventSource.close();
   });
 
-  // error
+  // Named SSE "event: error" frames sent by the backend
   eventSource.addEventListener("error", (event) => {
-    callbacks.onError(`Generation failed. ${event}`);
+    let message = "An unexpected error occurred. Please try again.";
+    if (event instanceof MessageEvent && event.data) {
+      try {
+        const parsed = JSON.parse(event.data) as { data?: string };
+        if (parsed.data) message = parsed.data;
+      } catch {
+        message = String(event.data);
+      }
+    }
+    callbacks.onError(message);
     eventSource.close();
   });
+
+  // Connection-level failures (network error, CORS block, server crash, etc.)
+  // These fire on onerror with a plain Event, NOT a MessageEvent.
+  eventSource.onerror = () => {
+    // Only handle if the source hasn't already been closed by the named handler above
+    if (eventSource.readyState === EventSource.CLOSED) return;
+    callbacks.onError("Connection lost or failed to reach the server. Please try again.");
+    eventSource.close();
+  };
 
   return () => {
     eventSource.close();

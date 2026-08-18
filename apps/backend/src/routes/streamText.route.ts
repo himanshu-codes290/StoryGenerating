@@ -23,17 +23,17 @@ export async function streamTextRoute(app: FastifyInstance) {
       const job = await textQueue.getJob(jobId);
 
       if (!job) {
-          return reply.code(404).send({
-              message: "Job not found",
-          });
+        return reply.code(404).send({
+          message: "Job not found",
+        });
       }
-      
+
       const state = await job.getState();
 
       if (state === "failed") {
-      return reply.code(409).send({
+        return reply.code(409).send({
           message: job.failedReason ?? "Job failed",
-      });
+        });
       }
 
       const completed = state === "completed";
@@ -45,10 +45,10 @@ export async function streamTextRoute(app: FastifyInstance) {
 
       if (completed) {
         reply.raw.writeHead(200, {
-            "Content-Type": "text/event-stream",
-            "Cache-Control": "no-cache",
-            Connection: "keep-alive",
-            "Access-Control-Allow-Origin": corsOrigin,
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          Connection: "keep-alive",
+          "Access-Control-Allow-Origin": corsOrigin,
         });
 
         reply.raw.flushHeaders();
@@ -57,85 +57,84 @@ export async function streamTextRoute(app: FastifyInstance) {
         const result = job.returnvalue;
 
         writeSSE(reply, {
-            type: "token",
-            data: result.textResult,
+          type: "token",
+          data: result.textResult,
         });
 
         writeSSE(reply, {
-            type: "complete",
+          type: "complete",
         });
 
         reply.raw.end();
         return;
-    }
+      }
 
-    reply.raw.writeHead(200, {
+      reply.raw.writeHead(200, {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
         "Access-Control-Allow-Origin": corsOrigin,
-    });
+      });
 
-    reply.raw.flushHeaders();
-    reply.hijack();
+      reply.raw.flushHeaders();
+      reply.hijack();
 
-    const redis = redisClient.duplicate();
-    let lastId = "0-0";
-    let closed = false;
+      const redis = redisClient.duplicate();
+      let lastId = "0-0";
+      let closed = false;
 
-    request.raw.on("close", () => {
+      request.raw.on("close", () => {
         closed = true;
         redis.disconnect();
-    });
+      });
 
-    const streamKey = getTextStreamKey(jobId);
+      const streamKey = getTextStreamKey(jobId);
 
-    try {
+      try {
         while (!closed) {
-        const response = await redis.xread(
-          "BLOCK",
-          0,
-          "STREAMS",
-          streamKey,
-          lastId
-        );
+          const response = await redis.xread(
+            "BLOCK",
+            0,
+            "STREAMS",
+            streamKey,
+            lastId
+          );
 
-        if (!response) {
-          continue;
-        }
+          if (!response) {
+            continue;
+          }
 
-        for (const [, entries] of response) {
-          for (const [id, fields] of entries) {
-            lastId = id;
+          for (const [, entries] of response) {
+            for (const [id, fields] of entries) {
+              lastId = id;
 
-            const eventIndex = fields.indexOf("event");
+              const eventIndex = fields.indexOf("event");
 
-            if (eventIndex === -1) continue;
+              if (eventIndex === -1) continue;
 
-            const rawEvent = fields[eventIndex + 1];
+              const rawEvent = fields[eventIndex + 1];
 
-            if (!rawEvent)
+              if (!rawEvent)
                 continue
-            const event = JSON.parse(rawEvent) as StreamEvent;
+              const event = JSON.parse(rawEvent) as StreamEvent;
 
-            writeSSE(reply, event);
+              writeSSE(reply, event);
 
-            if (
-              event.type === "complete" ||
-              event.type === "error"
-            ) {
-              reply.raw.end();
-              return;
+              if (
+                event.type === "complete" ||
+                event.type === "error"
+              ) {
+                reply.raw.end();
+                return;
+              }
             }
           }
         }
-      }
-    } finally
-    {
-      redis.disconnect();
+      } finally {
+        redis.disconnect();
 
-    }
-    
+      }
+
     }
   );
 }
