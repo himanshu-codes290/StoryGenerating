@@ -2,7 +2,8 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getTextStreamKey, redisClient } from "../infrastructure/redis/textStream.redis.js";
 import { writeSSE } from "../utils/writeSSE.js";
 import type { StreamEvent } from "../infrastructure/redis/streamChannels.js";
-import { textQueue } from "../infrastructure/bullmq/bullmq.textGeneration.queue.js"
+import { textQueue } from "../infrastructure/bullmq/bullmq.textGeneration.queue.js";
+import { env } from "../config/env.js";
 
 export async function streamTextRoute(app: FastifyInstance) {
   app.get(
@@ -38,11 +39,16 @@ export async function streamTextRoute(app: FastifyInstance) {
       const completed = state === "completed";
 
 
+      // The SSE routes call reply.raw.writeHead() which bypasses @fastify/cors.
+      // We must manually add CORS headers here so the browser doesn't block the stream.
+      const corsOrigin = (env.FRONTEND_ORIGIN.split(",")[0] ?? "*").trim();
+
       if (completed) {
         reply.raw.writeHead(200, {
             "Content-Type": "text/event-stream",
             "Cache-Control": "no-cache",
             Connection: "keep-alive",
+            "Access-Control-Allow-Origin": corsOrigin,
         });
 
         reply.raw.flushHeaders();
@@ -67,6 +73,7 @@ export async function streamTextRoute(app: FastifyInstance) {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
+        "Access-Control-Allow-Origin": corsOrigin,
     });
 
     reply.raw.flushHeaders();

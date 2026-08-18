@@ -12,4 +12,6 @@ export const env = {
     REDIS_URL : process.env.REDIS_URL,
     REDIS_HOST : process.env.REDIS_HOST ?? "127.0.0.1",
     REDIS_PORT : Number(process.env.REDIS_PORT ?? 6379),
+    // CORS — comma-separated list of allowed frontend origins
+    FRONTEND_ORIGIN : process.env.FRONTEND_ORIGIN ?? "http://localhost:5173",
 };

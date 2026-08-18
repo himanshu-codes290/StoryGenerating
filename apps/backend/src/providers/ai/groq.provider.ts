@@ -16,7 +16,7 @@ export class GroqProvider implements AIProvider {
     async generate(options: GenerateTextOptions): Promise<string> {
     try {
       const response = await this.client.chat.completions.create({
-        model: options.model ?? "llama-3.3-70b-versatile",
+        model: options.model ?? "openai/gpt-oss-120b",
 
         messages: [
             ...(options.systemPrompt?.trim()

@@ -10,22 +10,46 @@ dotenv.config();
 function createRedisClient(): Redis {
   const url = process.env.REDIS_URL;
 
+  // Exponential backoff: 50ms, 100ms, 200ms ... capped at 5s
+  const retryStrategy = (times: number): number =>
+    Math.min(times * 50, 5000);
+
   if (url) {
     // Upstash / any cloud Redis with TLS (rediss://) or plain (redis://) URL
-    return new Redis(url, {
+    const client = new Redis(url, {
       maxRetriesPerRequest: null,
       enableReadyCheck: false,   // Required for Upstash
       lazyConnect: false,
+      retryStrategy,
+      reconnectOnError: () => true, // Always reconnect on error (handles stale connections after hibernation)
     });
+
+    client.on('error', (err: Error) => {
+      console.error('[Redis] Connection error:', err.message);
+    });
+
+    client.on('reconnecting', () => {
+      console.log('[Redis] Reconnecting...');
+    });
+
+    return client;
   }
 
   // Local Redis fallback
-  return new Redis({
+  const client = new Redis({
     host: process.env.REDIS_HOST || '127.0.0.1',
     port: Number(process.env.REDIS_PORT) || 6379,
     maxRetriesPerRequest: null,
     enableReadyCheck: false,
+    retryStrategy,
+    reconnectOnError: () => true,
   });
+
+  client.on('error', (err: Error) => {
+    console.error('[Redis] Connection error:', err.message);
+  });
+
+  return client;
 }
 
 // Single shared ioredis instance reused by BullMQ Queue, QueueEvents, and Workers.

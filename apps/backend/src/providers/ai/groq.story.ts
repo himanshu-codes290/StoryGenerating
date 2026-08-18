@@ -11,7 +11,7 @@ export async function groqStoryGenerator(prompt:string) : Promise<string>
 {
     try {
         const response = await groq.chat.completions.create({
-        model: "llama-3.3-70b-versatile", // or another Groq-supported model
+        model: "openai/gpt-oss-120b", // or another Groq-supported model
         messages: [
             {
             role: "user",
