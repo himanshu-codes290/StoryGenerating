@@ -1,5 +1,6 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { storyQueue, queueEvents } from "../infrastructure/bullmq/bullmq.storyQueue.js";
+import { env } from "../config/env.js";
 
 
 // 2. Real-time SSE Streaming Route
@@ -14,12 +15,16 @@ export function streamStoryRoute(app: FastifyInstance) {
                 return reply.status(404).send({ error: 'Job not found' });
             }
 
+            // The SSE routes call reply.raw.writeHead() which bypasses @fastify/cors.
+            // We must manually add CORS headers here so the browser doesn't block the stream.
+            const corsOrigin = (env.FRONTEND_ORIGIN.split(",")[0] ?? "*").trim();
+
             // Set proper HTTP headers for SSE
             reply.raw.writeHead(200, {
                 'Content-Type': 'text/event-stream',
                 'Cache-Control': 'no-cache, no-transform',
                 'Connection': 'keep-alive',
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': corsOrigin,
             });
 
             // Helper to send formatted SSE messages
