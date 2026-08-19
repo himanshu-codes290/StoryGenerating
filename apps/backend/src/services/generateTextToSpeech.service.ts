@@ -1,10 +1,10 @@
-import type { TTSRequest, TTSResult } from "@repo/types"
+import type { TTSRequest, TTSResult, TTSBufferResult } from "@repo/types"
 import { getTTSProvider } from "../providers/tts/registry.js";
 
 import { PassThrough } from "node:stream";
 import { chunkText } from "../utils/textChunking.js";
 
-// const MAX_DEEPGRAM_CHARS = 2000;
+// ── Stream path (kept for future streaming/paid clients) ──────────────────────
 
 export async function generateSpeech(
   request: TTSRequest
@@ -15,14 +15,14 @@ export async function generateSpeech(
   const chunks = chunkText(request.text, {maxLength : provider.metadata.maxCharacters});
   
   if (chunks.length === 1) {
-    return provider.generate(request);
+    return provider.generateStream(request);
   }
   const output = new PassThrough();
 
   (async () => {
     try {
       for (const chunk of chunks) {
-        const result = await provider.generate({
+        const result = await provider.generateStream({
           ...request,
           text: chunk,
         });
@@ -46,4 +46,29 @@ export async function generateSpeech(
   contentType: "audio/mpeg",
   };
 
+}
+
+// ── Buffer path (default for all current clients, Redis-friendly) ─────────────
+
+/**
+ * Generates speech for the full text, collecting all chunk audio into a single
+ * Buffer. Callers can then store it in Redis with a single SET command.
+ */
+export async function generateSpeechBuffer(
+  request: TTSRequest
+): Promise<TTSBufferResult> {
+  const provider = getTTSProvider(request.provider);
+  const chunks = chunkText(request.text, { maxLength: provider.metadata.maxCharacters });
+
+  const buffers: Buffer[] = [];
+
+  for (const chunk of chunks) {
+    const result = await provider.generate({ ...request, text: chunk });
+    buffers.push(result.audio);
+  }
+
+  return {
+    audio: Buffer.concat(buffers),
+    contentType: "audio/mpeg",
+  };
 }

@@ -17,6 +17,12 @@ export type TTSResult<T = Record<string, unknown>> = {
   metadata? : T;
 };
 
+export type TTSBufferResult<T = Record<string, unknown>> = {
+  audio: Buffer;
+  contentType: string;
+  metadata?: T;
+};
+
 export interface TTSProviderMetadata {
     maxCharacters: number;
 }
