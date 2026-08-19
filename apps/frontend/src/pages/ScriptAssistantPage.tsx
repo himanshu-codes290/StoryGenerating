@@ -1,4 +1,3 @@
-import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Spinner } from "@/components/ui/spinner";
-import { generateText } from "../features/tts/api/generateTextApi";
+import { useScriptAssistant } from "@/features/script-assistant/hooks/useScriptAssistant";
 import { 
   Bot, 
   Sparkles, 
@@ -24,61 +23,18 @@ import {
 
 export function ScriptAssistantPage() {
   const navigate = useNavigate();
-  const [idea, setIdea] = useState("");
-  const [task, setTask] = useState("write");
-  const [tone, setTone] = useState("professional");
-  const [generatedScript, setGeneratedScript] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-  const stopStreamingRef = useRef<(() => void) | null>(null);
-
-  useEffect(() => {
-    return () => {
-      stopStreamingRef.current?.();
-    };
-  }, []);
-
-  async function handleGenerate() {
-    if (idea.trim().length === 0) return;
-    setLoading(true);
-    setGeneratedScript("");
-    setError(null);
-
-    try {
-      const stopStreaming = await generateText(
-        {
-          text: idea,
-          task: task,
-          tone: tone,
-        },
-        {
-          onToken(token) {
-            setGeneratedScript((prev) => prev + token);
-          },
-          onComplete() {
-            setLoading(false);
-          },
-          onError(message) {
-            setLoading(false);
-            setError(message);
-          },
-        }
-      );
-
-      stopStreamingRef.current = stopStreaming;
-    } catch {
-      setError("Failed to generate script.");
-      setLoading(false);
-    }
-  }
-
-  const handleCopy = () => {
-    if (!generatedScript) return;
-    navigator.clipboard.writeText(generatedScript);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const {
+    idea, setIdea,
+    task, setTask,
+    tone, setTone,
+    generatedScript, setGeneratedScript,
+    loading,
+    error,
+    copied,
+    wordCount,
+    handleGenerate,
+    handleCopy,
+  } = useScriptAssistant();
 
   const handleSendToTTS = () => {
     if (!generatedScript) return;
@@ -89,8 +45,6 @@ export function ScriptAssistantPage() {
     if (!generatedScript) return;
     navigate("/story", { state: { prompt: generatedScript } });
   };
-
-  const wordCount = generatedScript.trim() ? generatedScript.trim().split(/\s+/).length : 0;
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">

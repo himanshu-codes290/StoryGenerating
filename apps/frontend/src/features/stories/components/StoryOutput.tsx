@@ -1,15 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Copy, Check, AlertCircle, Sparkles } from "lucide-react";
+import { BookOpen, Copy, Check, AlertCircle, Sparkles, Mic, ArrowRight } from "lucide-react";
 
 interface StoryOutputProps {
   story: string;
   error: string | null;
-  children?: React.ReactNode;
 }
 
-export function StoryOutput({ story, error, children }: StoryOutputProps) {
+export function StoryOutput({ story, error }: StoryOutputProps) {
+  const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -17,6 +18,11 @@ export function StoryOutput({ story, error, children }: StoryOutputProps) {
     navigator.clipboard.writeText(story);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleSendToTTS = () => {
+    if (!story) return;
+    navigate("/tts", { state: { text: story } });
   };
 
   return (
@@ -73,8 +79,29 @@ export function StoryOutput({ story, error, children }: StoryOutputProps) {
             {story}
           </div>
 
-          {/* Render Action Extensions (e.g. SpeechGenerator) */}
-          {children && <div className="pt-2">{children}</div>}
+          {/* Send to TTS Studio */}
+          <div className="flex items-center justify-between rounded-xl border border-indigo-500/20 bg-indigo-500/5 p-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                <Mic className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-foreground">Audio Narration</p>
+                <p className="text-[11px] text-muted-foreground">
+                  Convert this story into voice audio in the TTS Studio
+                </p>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              onClick={handleSendToTTS}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs px-4 py-2 rounded-lg shadow-sm flex items-center gap-2"
+            >
+              Send to TTS Studio
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         </div>
       ) : (
         /* Empty State */

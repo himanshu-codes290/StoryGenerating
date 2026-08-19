@@ -7,12 +7,6 @@ import { storyQueue } from "../infrastructure/bullmq/bullmq.storyQueue.js";
 
 // 1. Enqueue Request Route
 export async function generateStoryRoutes(app : FastifyInstance) {
-    // app.post("/generate-story",async (request : FastifyRequest<{Body : storyGenerateObj}>, reply : FastifyReply) => {
-    
-    //     const story = await generateStory(request.body);
-        
-    //     return reply.send(successResponse({story}));
-    // });
 
     app.post('/generate/stories', async (request: FastifyRequest<{ Body: StoryJobData }>, reply: FastifyReply) => {
         const { prompt } = request.body || {};

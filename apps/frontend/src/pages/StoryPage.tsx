@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { StoryGenerator } from "../features/stories/components/StoryGenerator";
 import { StoryOutput } from "../features/stories/components/StoryOutput";
-import { SpeechGenerator } from "@/features/stories/components/SpeechGenerator";
 import { generateStory } from "../features/stories/api/storyApi";
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, Sparkles } from "lucide-react";
@@ -74,10 +73,8 @@ export function StoryPage() {
         </CardContent>
       </Card>
 
-      {/* Story Output Card with Audio Speech Player Extension */}
-      <StoryOutput story={story} error={error}>
-        <SpeechGenerator story={story} error={error} />
-      </StoryOutput>
+      {/* Story Output Card with Send to TTS action built in */}
+      <StoryOutput story={story} error={error} />
     </div>
   );
 }
