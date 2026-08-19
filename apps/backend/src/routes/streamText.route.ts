@@ -4,21 +4,18 @@ import { writeSSE } from "../utils/writeSSE.js";
 import type { StreamEvent } from "../infrastructure/redis/streamChannels.js";
 import { textQueue } from "../infrastructure/bullmq/bullmq.textGeneration.queue.js";
 import { env } from "../config/env.js";
+import { JobIdParamsSchema } from "../schemas/index.js";
+import { validateParams } from "../middleware/validate.js";
 
 export async function streamTextRoute(app: FastifyInstance) {
   app.get(
     "/stream/:jobId/text",
+    { preHandler: [validateParams(JobIdParamsSchema)] },
     async (
       request: FastifyRequest<{ Params: { jobId: string } }>,
       reply: FastifyReply
     ) => {
       const { jobId } = request.params;
-
-      if (!jobId) {
-        return reply.code(400).send({
-          message: "Job Id is required",
-        });
-      }
 
       const job = await textQueue.getJob(jobId);
 
