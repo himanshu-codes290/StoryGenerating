@@ -1,5 +1,4 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { useState, useRef, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -7,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
-import { generateText } from "../api/generateTextApi";
+import { useScriptAssistant } from "@/features/script-assistant/hooks/useScriptAssistant";
 import { Bot, Sparkles, Wand2, Copy, Check, ArrowRight, Type, AlertCircle } from "lucide-react";
 
 type ScriptAssistantDrawerProps = {
@@ -21,65 +20,22 @@ export function ScriptAssistantDrawer({
   onOpenChange,
   onUseScript,
 }: ScriptAssistantDrawerProps) {
-  const [idea, setIdea] = useState("");
-  const [task, setTask] = useState("write");
-  const [tone, setTone] = useState("professional");
-  const [generatedScript, setGeneratedScript] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-  const stopStreamingRef = useRef<(() => void) | null>(null);
-
-  useEffect(() => {
-    if (!open) {
-      stopStreamingRef.current?.();
-    }
-  }, [open]);
-
-  async function handleGenerate() {
-    setLoading(true);
-    setGeneratedScript("");
-    setError(null);
-
-    try {
-      const stopStreaming = await generateText(
-        {
-          text: idea,
-          task: task,
-          tone: tone,
-        },
-        {
-          onToken(token) {
-            setGeneratedScript((prev) => prev + token);
-          },
-          onComplete() {
-            setLoading(false);
-          },
-          onError(message) {
-            setLoading(false);
-            setError(message);
-          },
-        }
-      );
-
-      stopStreamingRef.current = stopStreaming;
-    } catch {
-      setError("Failed to generate script.");
-      setLoading(false);
-    }
-  }
+  const {
+    idea, setIdea,
+    task, setTask,
+    tone, setTone,
+    generatedScript, setGeneratedScript,
+    loading,
+    error,
+    copied,
+    handleGenerate,
+    handleCopy,
+  } = useScriptAssistant(open);
 
   function handleUseScript() {
     onUseScript(generatedScript);
     onOpenChange(false);
   }
-
-  const handleCopy = () => {
-    if (!generatedScript) return;
-    navigator.clipboard.writeText(generatedScript);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>

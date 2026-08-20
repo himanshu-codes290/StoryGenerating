@@ -12,15 +12,20 @@ export async function generateStory(
     body: JSON.stringify(request),
   });
 
-  const body = (await response.json()) as ApiResponse<{
-    jobId: string;
-    streamUrl: string;
-  }>;
+  let body: (ApiResponse<{ jobId: string; streamUrl: string }> & { message?: string }) | null = null;
+  try {
+    body = await response.json();
+  } catch {
+    // Non-JSON response
+  }
 
-  if (!response.ok || !body.data) {
-    throw new Error(
-      body.error?.message ?? "Failed to initiate story generation."
-    );
+  if (!response.ok || !body?.data) {
+    const errorMsg =
+      body?.error?.message ||
+      body?.message ||
+      response.statusText ||
+      "Failed to initiate story generation.";
+    throw new Error(errorMsg);
   }
 
   const { streamUrl } = body.data;
@@ -33,7 +38,11 @@ export async function generateStory(
 
     // Stream status update (Optional: pass to a callback if you want UI progress)
     eventSource.addEventListener("status", (e) => {
-      console.log("Story generation status:", JSON.parse(e.data));
+      try {
+        console.log("Story generation status:", JSON.parse(e.data));
+      } catch {
+        // ignore parse error on status
+      }
     });
 
     // Story complete event -> Resolve the Promise
@@ -51,8 +60,18 @@ export async function generateStory(
     // Error event -> Reject the Promise
     eventSource.addEventListener("error", (e) => {
       console.error("SSE connection error:", e);
+      let errorMsg = "Story generation failed or connection was lost.";
+      if (e instanceof MessageEvent && e.data) {
+        try {
+          const parsed = JSON.parse(e.data) as { error?: string; message?: string };
+          if (parsed.error) errorMsg = parsed.error;
+          else if (parsed.message) errorMsg = parsed.message;
+        } catch {
+          errorMsg = String(e.data);
+        }
+      }
       eventSource.close(); // Always close stream connection on error
-      reject(new Error("Story generation failed or connection was lost."));
+      reject(new Error(errorMsg));
     });
   });
 }

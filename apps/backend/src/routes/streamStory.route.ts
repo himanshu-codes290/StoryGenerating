@@ -1,12 +1,15 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { storyQueue, queueEvents } from "../infrastructure/bullmq/bullmq.storyQueue.js";
 import { env } from "../config/env.js";
+import { JobIdParamsSchema } from "../schemas/index.js";
+import { validateParams } from "../middleware/validate.js";
 
 
 // 2. Real-time SSE Streaming Route
 export function streamStoryRoute(app: FastifyInstance) {
     app.get(
         '/stories/stream/:jobId',
+        { preHandler: [validateParams(JobIdParamsSchema)] },
         async (request: FastifyRequest<{ Params: { jobId: string } }>, reply: FastifyReply) => {
             const { jobId } = request.params;
             const job = await storyQueue.getJob(jobId);

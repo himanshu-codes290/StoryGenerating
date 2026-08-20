@@ -4,12 +4,6 @@ export type GenerateTextRequest = {
     tone?: string;
 };
 
-export type GenerateTextResponse = {
-    jobId: string;
-    status: string;
-    streamUrl: string;
-};
-
 export type GenerateTextCallbacks = {
     onToken: (token: string) => void;
     onComplete: () => void;

@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { TTSGenerator } from "../features/tts/componenets/TTSGenerator";
-import { TTSAudioPlayer } from "../features/tts/componenets/TTSAudioPlayer";
-import { ScriptAssistantDrawer } from "@/features/tts/componenets/ScriptAssistantDrawer";
-import { TTSSettings } from "@/features/tts/componenets/TTSSettings";
+import { TTSGenerator } from "../features/tts/components/TTSGenerator";
+import { TTSAudioPlayer } from "../features/tts/components/TTSAudioPlayer";
+import { ScriptAssistantDrawer } from "@/features/tts/components/ScriptAssistantDrawer";
+import { TTSSettings } from "@/features/tts/components/TTSSettings";
 import { useTTS } from "@/features/tts/hooks/useTTS";
 import type { TTSProviderName } from "@repo/types";
 import { TTS_PROVIDERS, TTS_LANGUAGES } from "@repo/shared";
