@@ -3,8 +3,9 @@ import { z } from "zod";
 export const JobIdParamsSchema = z.object({
   jobId: z
     .string({ required_error: "Job ID is required" })
-    .uuid("Job ID must be a valid UUID"),
+    .min(1, "Job ID cannot be empty"),
 });
+
 
 export const AudioKeyParamsSchema = z.object({
   key: z

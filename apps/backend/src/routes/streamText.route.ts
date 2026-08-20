@@ -25,46 +25,9 @@ export async function streamTextRoute(app: FastifyInstance) {
         });
       }
 
-      const state = await job.getState();
-
-      if (state === "failed") {
-        return reply.code(409).send({
-          message: job.failedReason ?? "Job failed",
-        });
-      }
-
-      const completed = state === "completed";
-
-
       // The SSE routes call reply.raw.writeHead() which bypasses @fastify/cors.
       // We must manually add CORS headers here so the browser doesn't block the stream.
       const corsOrigin = (env.FRONTEND_ORIGIN.split(",")[0] ?? "*").trim();
-
-      if (completed) {
-        reply.raw.writeHead(200, {
-          "Content-Type": "text/event-stream",
-          "Cache-Control": "no-cache",
-          Connection: "keep-alive",
-          "Access-Control-Allow-Origin": corsOrigin,
-        });
-
-        reply.raw.flushHeaders();
-        reply.hijack();
-
-        const result = job.returnvalue;
-
-        writeSSE(reply, {
-          type: "token",
-          data: result.textResult,
-        });
-
-        writeSSE(reply, {
-          type: "complete",
-        });
-
-        reply.raw.end();
-        return;
-      }
 
       reply.raw.writeHead(200, {
         "Content-Type": "text/event-stream",
@@ -75,6 +38,32 @@ export async function streamTextRoute(app: FastifyInstance) {
 
       reply.raw.flushHeaders();
       reply.hijack();
+
+      const state = await job.getState();
+
+      if (state === "failed") {
+        writeSSE(reply, {
+          type: "error",
+          data: job.failedReason ?? "Job failed",
+        });
+        reply.raw.end();
+        return;
+      }
+
+      if (state === "completed") {
+        const result = job.returnvalue;
+        if (result?.textResult) {
+          writeSSE(reply, {
+            type: "token",
+            data: result.textResult,
+          });
+        }
+        writeSSE(reply, {
+          type: "complete",
+        });
+        reply.raw.end();
+        return;
+      }
 
       const redis = redisClient.duplicate();
       let lastId = "0-0";
@@ -91,13 +80,22 @@ export async function streamTextRoute(app: FastifyInstance) {
         while (!closed) {
           const response = await redis.xread(
             "BLOCK",
-            0,
+            1000,
             "STREAMS",
             streamKey,
             lastId
           );
 
           if (!response) {
+            const currentState = await job.getState();
+            if (currentState === "failed") {
+              writeSSE(reply, {
+                type: "error",
+                data: job.failedReason ?? "Job failed",
+              });
+              reply.raw.end();
+              return;
+            }
             continue;
           }
 
@@ -111,16 +109,12 @@ export async function streamTextRoute(app: FastifyInstance) {
 
               const rawEvent = fields[eventIndex + 1];
 
-              if (!rawEvent)
-                continue
+              if (!rawEvent) continue;
               const event = JSON.parse(rawEvent) as StreamEvent;
 
               writeSSE(reply, event);
 
-              if (
-                event.type === "complete" ||
-                event.type === "error"
-              ) {
+              if (event.type === "complete" || event.type === "error") {
                 reply.raw.end();
                 return;
               }
@@ -129,9 +123,7 @@ export async function streamTextRoute(app: FastifyInstance) {
         }
       } finally {
         redis.disconnect();
-
       }
-
     }
   );
-}
+}

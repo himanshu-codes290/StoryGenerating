@@ -1,8 +1,16 @@
+export interface ApiErrorIssue {
+  field: string;
+  message: string;
+}
+
+export interface ApiError {
+  message: string;
+  code?: string;
+  issues?: ApiErrorIssue[];
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T | null;
-  error: {
-    message: string;
-    code?: string;
-  } | null;
-}
+  error: ApiError | null;
+}

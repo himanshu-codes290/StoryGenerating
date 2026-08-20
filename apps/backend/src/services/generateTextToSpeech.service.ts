@@ -64,8 +64,9 @@ export async function generateSpeechBuffer(
 
   for (const chunk of chunks) {
     const result = await provider.generate({ ...request, text: chunk });
-    buffers.push(result.audio);
+    buffers.push(Buffer.from(result.audio));
   }
+
 
   return {
     audio: Buffer.concat(buffers),

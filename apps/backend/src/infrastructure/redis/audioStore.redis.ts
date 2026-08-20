@@ -14,11 +14,12 @@ export function getAudioKey(jobId: string): string {
  */
 export async function storeAudio(
   key: string,
-  audio: Buffer,
+  audio: Buffer | Uint8Array,
   ttlSeconds = 3600,
 ): Promise<void> {
-  await redisClient.set(key, audio, "EX", ttlSeconds);
+  await redisClient.set(key, Buffer.from(audio), "EX", ttlSeconds);
 }
+
 
 /**
  * Retrieves the full audio buffer from Redis with a single GET command.

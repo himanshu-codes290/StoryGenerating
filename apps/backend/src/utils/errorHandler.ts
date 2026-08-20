@@ -7,19 +7,16 @@ export function errorHandler(app: FastifyInstance) {
 
     // 1. Zod Validation Errors — structured field-level details
     if (error instanceof ZodValidationError) {
-      return reply.status(400).send({
-        success: false,
-        data: null,
-        error: {
-          message: error.message,
-          code: error.code,
-          issues: error.issues.map((issue) => ({
-            field: issue.path.length > 0 ? issue.path.join(".") : "body",
-            message: issue.message,
-          })),
-        },
-      });
+      const issues = error.issues.map((issue) => ({
+        field: issue.path.length > 0 ? issue.path.join(".") : "body",
+        message: issue.message,
+      }));
+
+      return reply
+        .status(400)
+        .send(errorResponse(error.message, error.code, issues));
     }
+
 
     // 2. Generic AppErrors (e.g. ValidationError, business logic errors)
     if (error instanceof AppError) {
